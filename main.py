@@ -115,9 +115,12 @@ class App(tk.Tk):
         self.subreddit_screen.pack(fill = "both", expand = True)
 
     # Functions used for switching between the SubredditEntryScreen and the ChartScreen
-    def switch_to_chart(self):
+    def switch_to_chart(self, entered_name = ''):
         self.subreddit_screen.pack_forget()
         self.chart_screen.pack(fill = "both", expand = True)
+
+        if entered_name:
+            self.chart_screen.label.config(text =  entered_name.capitalize())
 
     def switch_to_subreddit(self):
         self.chart_screen.pack_forget()
@@ -136,6 +139,9 @@ class SubredditEntryScreen(tk.Frame):
 
         self.chart_button = tk.Button(self.top_bar, text = "Chart", font = ("Arial", 16), command = master.switch_to_chart)
         self.chart_button.pack(side = "right", padx = 10, pady = 10)
+
+        # Initially disable button when no chart has been generated
+        self.chart_button.config(state = "disabled") 
 
         center = tk.Frame(self)
         center.pack(expand = True)
@@ -192,26 +198,27 @@ class SubredditEntryScreen(tk.Frame):
 
         pos, neg, neu = sentiment.getPos(), sentiment.getNeg(), sentiment.getNeu()
 
-        self.after(0, lambda: self.display_chart(pos, neg, neu))
+        self.after(0, lambda: self.display_chart(pos, neg, neu, subreddit_name))
 
     # Resets the animated loading visual and reactivates the submit button
     def reset_subreddit_entry_screen(self):
         self.animation_running = False
         self.animated_loading_label.config(text = "")
         self.submit_btn.config(state = "normal")
+        self.chart_button.config(state = "normal")
 
     # Handles swiching to the chart screen,
     # and displaying the initial chart (Pie Chart) 
-    def display_chart(self, pos, neg, neu):
+    def display_chart(self, pos, neg, neu, subreddit_name):
         self.reset_subreddit_entry_screen()
-        self.master.switch_to_chart()
+        self.master.switch_to_chart(subreddit_name)
         self.master.chart_screen.update_data_and_show_chart(pos, neg, neu)
 
 #Screen2: Display the chart and allow users to change chart being displayed 
 class ChartScreen(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
-        self.master = master
+
 
         # Top bar with SubReddit button
         top_bar = tk.Frame(self, bg = "#f0f0f0")
@@ -220,7 +227,10 @@ class ChartScreen(tk.Frame):
         back_button = tk.Button(top_bar, text = "SubReddit Entry", font = ("Arial", 16), command = master.switch_to_subreddit)
         back_button.pack(side = "right", padx = 10, pady = 10)
 
-        center = tk.Frame(self)
+        self.label = tk.Label(self, font=("Arial", 18))
+        self.label.pack(pady=20)
+
+        center = tk.Frame(self) 
         center.pack(side = "top", fill = "both", expand = True)  
 
         self.chart_container = tk.Frame(center)
