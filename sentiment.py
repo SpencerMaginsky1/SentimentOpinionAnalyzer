@@ -32,18 +32,14 @@ def scoreText(incoming):
         countNeu += 1
 
 
-
 #functions to get corresponding composite score
 def getPos():
-    #print("PS: {}".format(countPos))
     return countPos
 
 def getNeg():
-    #print("Ng: {}".format(countNeg))
     return countNeg
 
 def getNeu():
-    #print("NU: {}".format(countNeu))
     return countNeu
 
 def reset():
