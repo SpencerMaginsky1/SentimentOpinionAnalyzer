@@ -17,5 +17,5 @@ The goal of this project is to determine the sentiment (positive, negative, or n
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/Swishxo/sentiment.git
+   git clone https://github.com/SpencerMaginsky1/SentimentOpinionAnalyzer.git
    cd sentiment
